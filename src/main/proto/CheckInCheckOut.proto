@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.checkServiceGrpc.grpc";
+option java_outer_classname = "checkProto";
+
+service CheckService {
+  rpc getCheckRoom(CheckRequest) returns (CheckResponse);
+}
+
+message CheckRequest {
+  int32 id = 1;
+}
+
+message CheckResponse {
+  int32 id = 1;
+  string checkIn = 2;
+  string checkOut = 3;
+}
