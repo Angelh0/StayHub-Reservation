@@ -29,7 +29,6 @@ public class GrpcClientGetInfoRoom {
 
         RoomResponse response = stub.getInfoRoom(request);
 
-        // Construimos el DTO con lo que devuelve el servidor
         ReservationDTO dto = new ReservationDTO();
         dto.setUuidRoom(UUID.fromString(response.getUuidRoom()));
         dto.setPrice(response.getPrice());

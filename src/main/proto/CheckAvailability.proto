@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.checkAvailability.grpc";
+option java_outer_classname = "AvailabilityProto";
+
+service availabilityService {
+  rpc CheckAvailability(AvailabilityRequest) returns (AvailabilityResponse);
+}
+
+message AvailabilityRequest {
+  repeated string roomUuid = 1;
+  string checkIn = 2;
+  string checkOut = 3;
+}
+
+message RoomAvailability {
+  string roomUuid = 1;
+  bool available = 2;
+}
+
+message AvailabilityResponse {
+  repeated RoomAvailability rooms = 1;
+}
