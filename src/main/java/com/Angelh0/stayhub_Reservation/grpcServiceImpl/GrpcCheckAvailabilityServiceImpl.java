@@ -10,7 +10,6 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @GrpcService
 public class GrpcCheckAvailabilityServiceImpl extends availabilityServiceGrpc.availabilityServiceImplBase {
