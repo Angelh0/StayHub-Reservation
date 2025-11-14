@@ -22,3 +22,18 @@ message RoomAvailability {
 message AvailabilityResponse {
   repeated RoomAvailability rooms = 1;
 }
+
+// Este contrato se utiliza para el metodo deleteRoom (como comprobacion de existencia de reservas antes de borrado)
+
+service ReservationCheckService {
+  rpc CheckFutureReservation(ReservationRequest) returns (ReservationResponse);
+}
+
+message ReservationRequest {
+  string roomUuid = 1;
+}
+
+message ReservationResponse {
+  string roomUuid = 1;
+  bool available = 2;
+}

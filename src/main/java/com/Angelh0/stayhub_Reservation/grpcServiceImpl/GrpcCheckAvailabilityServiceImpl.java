@@ -22,7 +22,6 @@ public class GrpcCheckAvailabilityServiceImpl extends availabilityServiceGrpc.av
 
         AvailabilityResponse.Builder responseBuilder = AvailabilityResponse.newBuilder();
 
-
         for (String roomUuid : request.getRoomUuidList()) {
             boolean available = reservationService.isRoomAvailable(roomUuid, LocalDate.parse(request.getCheckIn()), LocalDate.parse(request.getCheckOut()));
 

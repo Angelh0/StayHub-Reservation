@@ -13,5 +13,6 @@ public interface ReservationService {
     ReservationEntity updateReservation(ReservationDTO reservationDTO);
     ReservationDTO getReservation(UUID uuid);
     ReservationDTO deleteReservation(UUID uuid);
+    boolean isFutureReservation(String uuid);
     boolean isRoomAvailable(String uuid, LocalDate checkIn, LocalDate checkOut);
 }

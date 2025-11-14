@@ -13,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.*;
 
 @Service
@@ -36,7 +38,6 @@ public class ReservationServiceImpl implements ReservationService {
         this.reservationRepository = reservationRepository;
         this.reservationConverter = reservationConverter;
         this.grpcClientGetChecks = grpcClientGetChecks;
-
     }
 
     @Override
@@ -82,6 +83,20 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
+    public boolean isFutureReservation(String uuid) {
+
+        LocalDate currentDay = LocalDate.now();
+
+        List<ReservationEntity> reservationEntityList = reservationRepository.findByUuidRoom(UUID.fromString(uuid));
+
+        for (ReservationEntity reservationEntity : reservationEntityList) {
+            if (!reservationEntity.getCheckOut().isBefore(currentDay)) {
+                return true;
+            }
+        } return false;
+    }
+
+    @Override
     public boolean isRoomAvailable(String uuid, LocalDate checkIn, LocalDate checkOut) {
 
         List<ReservationEntity> reservationEntityList = reservationRepository.findByUuidRoom(UUID.fromString(uuid));
@@ -93,4 +108,6 @@ public class ReservationServiceImpl implements ReservationService {
             }
         } return true;
     }
+
+
 }
