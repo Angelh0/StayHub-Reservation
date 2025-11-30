@@ -1,7 +1,6 @@
 package com.Angelh0.stayhub_Reservation.grpcServiceImpl;
 
 import com.Angelh0.stayhub_Reservation.Service.ReservationService;
-import com.Angelh0.stayhub_Reservation.dto.ReservationDTO;
 import com.checkAvailability.grpc.ReservationCheckServiceGrpc;
 import com.checkAvailability.grpc.ReservationRequest;
 import com.checkAvailability.grpc.ReservationResponse;
@@ -10,7 +9,7 @@ import net.devh.boot.grpc.server.service.GrpcService;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @GrpcService
-public class GrpcCheckFutureReservation extends ReservationCheckServiceGrpc.ReservationCheckServiceImplBase {
+public class GrpcCheckFutureReservationImpl extends ReservationCheckServiceGrpc.ReservationCheckServiceImplBase {
 
     @Autowired
     private ReservationService reservationService;

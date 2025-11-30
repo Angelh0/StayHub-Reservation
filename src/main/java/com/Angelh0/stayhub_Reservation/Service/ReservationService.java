@@ -2,6 +2,7 @@ package com.Angelh0.stayhub_Reservation.Service;
 
 import com.Angelh0.stayhub_Reservation.dto.RequestReservationDTO;
 import com.Angelh0.stayhub_Reservation.dto.ReservationDTO;
+import com.Angelh0.stayhub_Reservation.dto.StatusCheckValue;
 import com.Angelh0.stayhub_Reservation.entity.ReservationEntity;
 
 import java.time.LocalDate;
@@ -15,4 +16,5 @@ public interface ReservationService {
     ReservationDTO deleteReservation(UUID uuid);
     boolean isFutureReservation(String uuid);
     boolean isRoomAvailable(String uuid, LocalDate checkIn, LocalDate checkOut);
+    StatusCheckValue isCheckStatus(String uuid, LocalDate startDate, LocalDate endDate);
 }

@@ -37,3 +37,21 @@ message ReservationResponse {
   string roomUuid = 1;
   bool available = 2;
 }
+
+// Este contrato es utilizado para modificar los estados de las habitaciones, siempre y cuando no exista una reserva en las fechas seleccionadas
+
+service ReservationAvailabilityService {
+  rpc CheckRoomStatusChange (ReservationStatusChangeRequest) returns (ReservationStatusChangeResponse);
+}
+
+message ReservationStatusChangeRequest {
+  string roomUuid = 1;
+  string startDate = 2;
+  string endDate = 3;
+}
+
+message ReservationStatusChangeResponse {
+  bool available = 1;
+  string roomUuid = 2;
+  string message = 3;
+}

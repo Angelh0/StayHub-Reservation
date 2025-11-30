@@ -31,7 +31,6 @@ public class GrpcClientGetInfoRoom {
         ReservationDTO dto = new ReservationDTO();
         dto.setUuidRoom(UUID.fromString(response.getUuidRoom()));
         dto.setPrice(response.getPrice());
-
         return dto;
     }
 }
