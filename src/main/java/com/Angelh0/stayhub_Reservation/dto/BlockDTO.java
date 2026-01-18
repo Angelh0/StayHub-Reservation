@@ -1,5 +1,6 @@
 package com.Angelh0.stayhub_Reservation.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,9 @@ public class BlockDTO {
     private UUID uuid;
     private UUID uuidRoom;
 
+    @JsonFormat(pattern="d/M/yyyy")
     private LocalDate blockStartDate;
+
+    @JsonFormat(pattern="d/M/yyyy")
     private LocalDate blockEndDate;
 }

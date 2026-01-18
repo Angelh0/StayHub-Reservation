@@ -10,7 +10,7 @@ import java.util.UUID;
 
 public interface ReservationService {
 
-    ReservationDTO createReservation(UUID uuidRoom);
+    ReservationDTO createReservation(UUID uuidRoom, UUID uuidUser);
     ReservationEntity updateReservation(ReservationDTO reservationDTO);
     ReservationDTO getReservation(UUID uuid);
     ReservationDTO deleteReservation(UUID uuid);

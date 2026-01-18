@@ -27,6 +27,7 @@ public class ReservationConverter {
         );
 
         reservationDTO.setUuidRoom(grpcResponse.getUuidRoom());
+        reservationDTO.setUuidUser(reservationEntity.getUuidUser());
         reservationDTO.setPrice(grpcResponse.getPrice());
         reservationDTO.setUuidReservation(reservationEntity.getUuidReservation());
         reservationDTO.setCheckIn(reservationEntity.getCheckIn());
@@ -41,6 +42,7 @@ public class ReservationConverter {
         ReservationEntity reservationEntity = new ReservationEntity();
 
         reservationEntity.setUuidReservation(requestReservationDTO.getUuidReservation());
+        reservationEntity.setUuidUser(requestReservationDTO.getUuidUser());
         reservationEntity.setUuidRoom(requestReservationDTO.getUuidRoom());
         reservationEntity.setPrice(requestReservationDTO.getPrice());
         reservationEntity.setCheckIn(requestReservationDTO.getCheckIn());

@@ -24,6 +24,8 @@ public class ReservationEntity {
 
     private UUID uuidRoom;
 
+    private UUID uuidUser;
+
     private LocalDate checkIn;
 
     private LocalDate checkOut;

@@ -6,6 +6,7 @@ import com.Angelh0.stayhub_Reservation.dto.ReservationDTO;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -22,7 +23,8 @@ public class ReservationController {
     }
 
     @PostMapping("/createReservation/{uuidRoom}")
-    public ReservationDTO createReservation(@PathVariable UUID uuidRoom) {
-        return reservationService.createReservation(uuidRoom);
+    public ReservationDTO createReservation(@PathVariable UUID uuidRoom, Authentication authentication) {
+        UUID uuidUser = UUID.fromString(authentication.getPrincipal().toString());
+        return reservationService.createReservation(uuidRoom, uuidUser);
     }
 }

@@ -6,11 +6,9 @@ import com.checkServiceGrpc.grpc.CheckResponse;
 import com.checkServiceGrpc.grpc.CheckServiceGrpc;
 import io.grpc.ManagedChannel;
 import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
-import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 
 @Service
 public class GrpcClientGetChecks {

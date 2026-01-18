@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.chrono.ChronoLocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -52,7 +53,7 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ReservationDTO createReservation(UUID uuidRoom) {
+    public ReservationDTO createReservation(UUID uuidRoom, UUID uuidUser) {
 
         List<ReservationEntity> reservationEntityList = reservationRepository.findByUuidRoom(uuidRoom);
 
@@ -61,11 +62,11 @@ public class ReservationServiceImpl implements ReservationService {
 
         RequestReservationDTO requestReservationDTO = new RequestReservationDTO();
         requestReservationDTO.setUuidRoom(grpcResponse.getUuidRoom());
+        requestReservationDTO.setUuidUser(uuidUser);
         requestReservationDTO.setPrice(grpcResponse.getPrice());
         requestReservationDTO.setCheckIn(checkResponse.getCheckIn());
         requestReservationDTO.setCheckOut(checkResponse.getCheckOut());
         requestReservationDTO.setStatusReservation(StatusReservation.Pending);
-
 
         for (ReservationEntity reservationEntity : reservationEntityList) {
             if (reservationEntity.getCheckIn().isBefore(requestReservationDTO.getCheckOut()) &&
@@ -141,6 +142,10 @@ public class ReservationServiceImpl implements ReservationService {
         StatusCheckValue status = new StatusCheckValue();
         StringBuilder stringBuilder = new StringBuilder();
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        formatter.format(startDate);
+        formatter.format(endDate);
+
         List<ReservationEntity> reservationEntityList = reservationRepository.findByUuidRoom(UUID.fromString(uuid));
         List<BlockEntity> blockEntities = blockRepository.findBlockByUuidRoom(UUID.fromString(uuid));
 
@@ -158,9 +163,9 @@ public class ReservationServiceImpl implements ReservationService {
         for (BlockEntity blockEntity : blockEntities) {
             if (startDate.isBefore(blockEntity.getBlockEndDate()) && endDate.isAfter(blockEntity.getBlockStartDate())) {
                 stringBuilder.append("- Bloqueo del ")
-                        .append(blockEntity.getBlockStartDate())
+                        .append(formatter.format(blockEntity.getBlockStartDate()))
                         .append(" al ")
-                        .append(blockEntity.getBlockEndDate())
+                        .append(formatter.format(blockEntity.getBlockEndDate()))
                         .append("\n");
             }
         }
