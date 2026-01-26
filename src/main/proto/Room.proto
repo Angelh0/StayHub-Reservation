@@ -12,7 +12,17 @@ message RoomRequest {
   string uuidRoom = 1;
 }
 
+enum ReservationType {
+  Unspecified = 0;
+  Single = 1;
+  Double = 2;
+  Suite = 3;
+  Studio = 4;
+}
+
 message RoomResponse {
   string uuidRoom = 1;
   double price = 2;
+  string uuidOwner = 3;
+  ReservationType type = 4;
 }

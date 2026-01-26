@@ -34,6 +34,8 @@ public class ReservationConverter {
         reservationDTO.setCheckOut(reservationEntity.getCheckOut());
         reservationDTO.setStatusReservation(reservationEntity.getStatusReservation());
         reservationDTO.setCreatedReservation(reservationEntity.getCreatedReservation());
+        reservationDTO.setUuidOwner(grpcResponse.getUuidOwner());
+        reservationDTO.setType(grpcResponse.getType());
 
         return reservationDTO;
     }
@@ -48,6 +50,8 @@ public class ReservationConverter {
         reservationEntity.setCheckIn(requestReservationDTO.getCheckIn());
         reservationEntity.setCheckOut(requestReservationDTO.getCheckOut());
         reservationEntity.setStatusReservation(requestReservationDTO.getStatusReservation());
+        reservationEntity.setUuidOwner(requestReservationDTO.getUuidOwner());
+        reservationEntity.setType(requestReservationDTO.getType());
 
         return reservationEntity;
     }

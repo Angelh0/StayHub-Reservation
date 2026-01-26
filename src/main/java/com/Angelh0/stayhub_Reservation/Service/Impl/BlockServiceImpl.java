@@ -7,6 +7,7 @@ import com.Angelh0.stayhub_Reservation.repository.BlockRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -29,5 +30,15 @@ public class BlockServiceImpl implements BlockService {
         blockRepository.save(blockEntity);
 
         return null;
+    }
+
+    @Override
+    public BlockDTO cancelBlock(UUID uuidRoom, UUID uuidOwner) {
+        return null;
+    }
+
+    @Override
+    public List<BlockDTO> getBlock(UUID uuidRoom, UUID uuidOwner) {
+        return List.of();
     }
 }

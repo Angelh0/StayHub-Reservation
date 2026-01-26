@@ -61,12 +61,17 @@ public class ReservationServiceImpl implements ReservationService {
         ReservationDTO checkResponse = grpcClientGetChecks.getCheckRoom();
 
         RequestReservationDTO requestReservationDTO = new RequestReservationDTO();
-        requestReservationDTO.setUuidRoom(grpcResponse.getUuidRoom());
+        requestReservationDTO.setStatusReservation(StatusReservation.Pending);
         requestReservationDTO.setUuidUser(uuidUser);
-        requestReservationDTO.setPrice(grpcResponse.getPrice());
+        requestReservationDTO.setUuidOwner(grpcResponse.getUuidOwner());
         requestReservationDTO.setCheckIn(checkResponse.getCheckIn());
         requestReservationDTO.setCheckOut(checkResponse.getCheckOut());
-        requestReservationDTO.setStatusReservation(StatusReservation.Pending);
+
+        requestReservationDTO.setUuidRoom(grpcResponse.getUuidRoom());
+        requestReservationDTO.setPrice(grpcResponse.getPrice());
+        requestReservationDTO.setType(grpcResponse.getType());
+
+
 
         for (ReservationEntity reservationEntity : reservationEntityList) {
             if (reservationEntity.getCheckIn().isBefore(requestReservationDTO.getCheckOut()) &&
@@ -81,19 +86,58 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ReservationEntity updateReservation(ReservationDTO reservationDTO) {
+    public List<ReservationDTO> getMyReservation(UUID uuidUser) {
+
+        List<ReservationEntity> reservation = reservationRepository.findByUuidUser(uuidUser);
+
+        if (reservation.isEmpty()) {
+            return null;
+        }
+
+        List<ReservationDTO> reservationDTOS = new ArrayList<>();
+
+        for (ReservationEntity reservationEntity : reservation) {
+            if (reservationEntity.getUuidUser().equals(uuidUser)) {
+                reservationDTOS.add(reservationConverter.convertToDTO(reservationEntity));
+            }
+        }
+        return reservationDTOS;
+    }
+
+    @Override
+    public ReservationDTO cancelReservation(UUID uuidReservation, UUID uuidUser) {
+
+        Optional<ReservationEntity> reservationOpt = reservationRepository.findByUuidReservationAndUuidUser(uuidReservation,uuidUser);
+
+        if (reservationOpt.isPresent()) {
+
+            ReservationEntity reservation = reservationOpt.get();
+            reservation.setStatusReservation(StatusReservation.cancelled);
+
+            reservationRepository.save(reservation);
+
+            return reservationConverter.convertToDTO(reservation);
+        }
+
         return null;
     }
 
     @Override
-    public ReservationDTO getReservation(UUID uuid) {
-        return null;
+    public List<ReservationDTO> getOwnerReservation(UUID uuidUser) {
+
+        List<ReservationEntity> reservationEntityList = reservationRepository.findByUuidOwner(uuidUser);
+
+        List<ReservationDTO> reservationDTOS = new ArrayList<>();
+
+        for (ReservationEntity reservationEntity : reservationEntityList) {
+            if (uuidUser.equals(reservationEntity.getUuidOwner())) {
+                reservationDTOS.add(reservationConverter.convertToDTO(reservationEntity));
+            }
+        }
+
+        return reservationDTOS;
     }
 
-    @Override
-    public ReservationDTO deleteReservation(UUID uuid) {
-        return null;
-    }
 
     @Override
     public boolean isFutureReservation(String uuid) {
@@ -172,7 +216,7 @@ public class ReservationServiceImpl implements ReservationService {
 
         if (stringBuilder.length() > 0) {
             status.available = false;
-            status.message = "No se puede completar la accion. Existen conflictos:\n " + stringBuilder;
+            status.message = "No se puede completar el bloqueo. Existen conflictos:\n " + stringBuilder;
             return status;
         }
 

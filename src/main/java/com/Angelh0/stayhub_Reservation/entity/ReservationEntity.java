@@ -1,6 +1,7 @@
 package com.Angelh0.stayhub_Reservation.entity;
 
 import com.Angelh0.stayhub_Reservation.Enum.StatusReservation;
+import com.roomServiceGrpc.grpc.ReservationType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
@@ -26,6 +27,8 @@ public class ReservationEntity {
 
     private UUID uuidUser;
 
+    private UUID uuidOwner;
+
     private LocalDate checkIn;
 
     private LocalDate checkOut;
@@ -37,6 +40,8 @@ public class ReservationEntity {
     private LocalDate createdReservation;
 
     private Double price;
+
+    private ReservationType type;
 
     @PrePersist
     public void generateUUID() {

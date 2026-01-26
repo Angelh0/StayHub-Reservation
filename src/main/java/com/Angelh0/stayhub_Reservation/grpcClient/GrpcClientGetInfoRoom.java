@@ -29,8 +29,10 @@ public class GrpcClientGetInfoRoom {
         RoomResponse response = stub.getInfoRoom(request);
 
         ReservationDTO dto = new ReservationDTO();
+        dto.setUuidOwner(UUID.fromString(response.getUuidOwner()));
         dto.setUuidRoom(UUID.fromString(response.getUuidRoom()));
         dto.setPrice(response.getPrice());
+        dto.setType(response.getType());
         return dto;
     }
 }

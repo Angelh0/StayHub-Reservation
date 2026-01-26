@@ -10,4 +10,9 @@ import java.util.UUID;
 
 public interface ReservationRepository extends JpaRepository<ReservationEntity, Long> {
     List<ReservationEntity> findByUuidRoom(UUID uuidRoom);
+    List<ReservationEntity> findByUuidUser(UUID uuidUser);
+
+    List<ReservationEntity> findByUuidOwner(UUID uuidOwner);
+
+    Optional<ReservationEntity> findByUuidReservationAndUuidUser(UUID uuidReservation, UUID uuidUser);
 }
