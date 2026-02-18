@@ -1,5 +1,6 @@
 package com.Angelh0.stayhub_Reservation.grpcServiceImpl;
 
+import com.Angelh0.stayhub_Reservation.Service.BusinessService;
 import com.Angelh0.stayhub_Reservation.Service.ReservationService;
 import com.Angelh0.stayhub_Reservation.dto.StatusCheckValue;
 import com.checkAvailability.grpc.ReservationAvailabilityServiceGrpc;
@@ -15,12 +16,12 @@ import java.time.LocalDate;
 public class GrpcCheckRoomStatusChangeImpl extends ReservationAvailabilityServiceGrpc.ReservationAvailabilityServiceImplBase{
 
     @Autowired
-    private ReservationService reservationService;
+    private BusinessService businessService;
 
     @Override
     public void checkRoomStatusChange(ReservationStatusChangeRequest request, StreamObserver<ReservationStatusChangeResponse> responseObserver) {
 
-        StatusCheckValue changeStatus = reservationService.isCheckStatus(request.getRoomUuid(), LocalDate.parse(request.getStartDate()), LocalDate.parse(request.getEndDate()));
+        StatusCheckValue changeStatus = businessService.isCheckStatus(request.getRoomUuid(), request.getUuidOwner(), LocalDate.parse(request.getStartDate()), LocalDate.parse(request.getEndDate()));
 
         ReservationStatusChangeResponse response = ReservationStatusChangeResponse.newBuilder()
                 .setAvailable(changeStatus.available)

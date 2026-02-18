@@ -40,6 +40,7 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Autowired
     private final BlockService blockService;
+
     @Autowired
     private BlockRepository blockRepository;
 
@@ -176,57 +177,6 @@ public class ReservationServiceImpl implements ReservationService {
                 return false;
             }
         }
-
         return true;
-    }
-
-    @Override
-    public StatusCheckValue isCheckStatus(String uuid, LocalDate startDate, LocalDate endDate) {
-
-        StatusCheckValue status = new StatusCheckValue();
-        StringBuilder stringBuilder = new StringBuilder();
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        formatter.format(startDate);
-        formatter.format(endDate);
-
-        List<ReservationEntity> reservationEntityList = reservationRepository.findByUuidRoom(UUID.fromString(uuid));
-        List<BlockEntity> blockEntities = blockRepository.findBlockByUuidRoom(UUID.fromString(uuid));
-
-        for (ReservationEntity reservationEntity : reservationEntityList) {
-            if (startDate.isBefore(reservationEntity.getCheckOut()) && endDate.isAfter(reservationEntity.getCheckIn()))  {
-                stringBuilder.append("- Reserva del ")
-                        .append(reservationEntity.getCheckIn())
-                        .append(" al ")
-                        .append(reservationEntity.getCheckOut())
-                        .append("\n");
-            }
-        }
-
-
-        for (BlockEntity blockEntity : blockEntities) {
-            if (startDate.isBefore(blockEntity.getBlockEndDate()) && endDate.isAfter(blockEntity.getBlockStartDate())) {
-                stringBuilder.append("- Bloqueo del ")
-                        .append(formatter.format(blockEntity.getBlockStartDate()))
-                        .append(" al ")
-                        .append(formatter.format(blockEntity.getBlockEndDate()))
-                        .append("\n");
-            }
-        }
-
-        if (stringBuilder.length() > 0) {
-            status.available = false;
-            status.message = "No se puede completar el bloqueo. Existen conflictos:\n " + stringBuilder;
-            return status;
-        }
-
-        blockService.createBlock(UUID.fromString(uuid), startDate, endDate);
-
-        status.available = true;
-        status.message = "Nuevo bloqueo establecido:\n " +
-                "- RoomUuid: " + uuid +
-                "- Inicio de bloqueo: " + startDate +
-                "- Finalizacion de bloqueo: " + endDate;
-        return status;
     }
 }

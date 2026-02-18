@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.UUID;
 
 public interface BlockService {
-    BlockDTO createBlock(UUID uuidRoom, LocalDate blockStartDate, LocalDate blockEndDate);
-    BlockDTO cancelBlock(UUID uuidRoom, UUID uuidOwner);
-    List<BlockDTO> getBlock(UUID uuidRoom, UUID uuidOwner);
+
+    List<BlockDTO> cancelBlock(UUID uuidBlock, UUID uuidOwner);
+    List<BlockDTO> getBlock(UUID uuidOwner);
 }

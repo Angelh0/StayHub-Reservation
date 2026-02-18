@@ -4,7 +4,6 @@ import com.Angelh0.stayhub_Reservation.Service.BlockService;
 import com.Angelh0.stayhub_Reservation.Service.ReservationService;
 import com.Angelh0.stayhub_Reservation.dto.BlockDTO;
 import com.Angelh0.stayhub_Reservation.dto.ReservationDTO;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.cglib.core.Block;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
@@ -48,14 +47,14 @@ public class ReservationController {
         return reservationService.getOwnerReservation(uuidUser);
     }
 
-    @GetMapping("/block/{uuid}")
-    public List<BlockDTO> getBlock(@PathVariable UUID uuid, Authentication authentication) {
+    @GetMapping("/getBlock")
+    public List<BlockDTO> getBlock(Authentication authentication) {
         UUID uuidOwner = UUID.fromString(authentication.getPrincipal().toString());
-        return blockService.getBlock(uuidOwner, uuid);
+        return blockService.getBlock(uuidOwner);
     }
 
     @PatchMapping("/cancelBlock/{uuidBlock}")
-    public BlockDTO cancelBlock(@PathVariable UUID uuidBlock, Authentication authentication) {
+    public List<BlockDTO> cancelBlock(@PathVariable UUID uuidBlock, Authentication authentication) {
         UUID uuidOwner = UUID.fromString(authentication.getPrincipal().toString());
         return blockService.cancelBlock(uuidBlock, uuidOwner);
     }

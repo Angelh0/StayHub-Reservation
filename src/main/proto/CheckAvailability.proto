@@ -48,6 +48,7 @@ message ReservationStatusChangeRequest {
   string roomUuid = 1;
   string startDate = 2;
   string endDate = 3;
+  string uuidOwner = 4;
 }
 
 message ReservationStatusChangeResponse {

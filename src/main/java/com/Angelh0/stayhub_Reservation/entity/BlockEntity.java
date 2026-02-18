@@ -10,7 +10,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Table(name = "BLOCK_ENTITY")
+@Table(name = "BLOCK_TABLE")
 
 public class BlockEntity {
 
@@ -20,6 +20,8 @@ public class BlockEntity {
 
     private UUID uuid;
     private UUID uuidRoom;
+
+    private UUID uuidOwner;
 
     private LocalDate blockStartDate;
     private LocalDate blockEndDate;
