@@ -14,7 +14,8 @@ import java.util.UUID;
 public class GrpcClientGetInfoRoom {
 
     private final ManagedChannel channel =
-            NettyChannelBuilder.forTarget("localhost:9090")
+            NettyChannelBuilder
+                    .forTarget("stayhub-accommodation:9090")
                     .usePlaintext()
                     .build();
 

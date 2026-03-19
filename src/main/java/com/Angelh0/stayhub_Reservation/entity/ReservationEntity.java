@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Entity
@@ -37,7 +39,7 @@ public class ReservationEntity {
     @Column(name = "status")
     private StatusReservation statusReservation;
 
-    private LocalDate createdReservation;
+    private LocalDateTime createdReservation;
 
     private Double price;
 
@@ -49,7 +51,7 @@ public class ReservationEntity {
             uuidReservation = UUID.randomUUID();
         }
         if (createdReservation == null) {
-            createdReservation = LocalDate.now();
+            createdReservation = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         }
         if (statusReservation == null) {
             statusReservation = StatusReservation.Pending;

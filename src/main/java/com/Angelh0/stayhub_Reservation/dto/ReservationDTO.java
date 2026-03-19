@@ -8,6 +8,7 @@ import lombok.Setter;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -32,7 +33,7 @@ public class ReservationDTO {
     private StatusReservation statusReservation;
 
     @JsonFormat(pattern="d/M/yyyy")
-    private LocalDate createdReservation;
+    private LocalDateTime createdReservation;
 
     private Double price;
 

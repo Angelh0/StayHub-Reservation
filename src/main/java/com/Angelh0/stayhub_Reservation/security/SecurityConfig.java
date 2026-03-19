@@ -30,7 +30,7 @@ public class SecurityConfig {
                         .requestMatchers("/h2-console-Reservation/**", "/api-docs/**").permitAll()
 
                         // Endpoints USER
-                        .requestMatchers("/api/v1/createReservation/").hasAnyRole("user", "OWNER")
+                        .requestMatchers("/api/v1/createReservation/**").hasAnyRole("USER", "OWNER")
 
                         .anyRequest().authenticated()
                 )

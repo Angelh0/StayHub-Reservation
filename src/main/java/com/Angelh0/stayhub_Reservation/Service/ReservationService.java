@@ -17,5 +17,7 @@ public interface ReservationService {
     List<ReservationDTO> getOwnerReservation(UUID uuidUser);
     boolean isFutureReservation(String uuid);
     boolean isRoomAvailable(String uuid, LocalDate checkIn, LocalDate checkOut);
+    void confirmReservation();
+    void changeReservationAsCompleted();
 
 }

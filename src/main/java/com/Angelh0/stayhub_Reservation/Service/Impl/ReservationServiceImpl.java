@@ -15,7 +15,9 @@ import com.Angelh0.stayhub_Reservation.repository.BlockRepository;
 import com.Angelh0.stayhub_Reservation.repository.ReservationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cglib.core.Block;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -173,10 +175,45 @@ public class ReservationServiceImpl implements ReservationService {
         }
 
         for (ReservationEntity reservationEntity : reservationEntityList) {
-            if (checkIn.isBefore(reservationEntity.getCheckOut()) && checkOut.isAfter(reservationEntity.getCheckIn())) {
+            boolean isOverLopping = checkIn.isBefore(reservationEntity.getCheckOut()) && checkOut.isAfter(reservationEntity.getCheckIn());
+            boolean isActiveReservation = reservationEntity.getStatusReservation().equals(StatusReservation.Pending) || reservationEntity.getStatusReservation().equals(StatusReservation.Confirmed);
+
+            if (isOverLopping && isActiveReservation) {
                 return false;
             }
         }
         return true;
+    }
+
+    @Override
+    @Scheduled(fixedRate = 60000)
+    @Transactional
+    public void confirmReservation() {
+        LocalDateTime fiveMinutes = LocalDateTime.now().minusMinutes(5);
+
+        List<ReservationEntity> pending = reservationRepository.findByStatusReservationAndCreatedReservationBefore(StatusReservation.Pending, fiveMinutes);
+
+        if (!pending.isEmpty()) {
+            for (ReservationEntity reservationEntity : pending) {
+                reservationEntity.setStatusReservation(StatusReservation.Confirmed);
+                System.out.println("Reserva " + reservationEntity.getUuidReservation() + " auto conformación");
+            }
+            reservationRepository.saveAll(pending);
+        }
+    }
+
+    @Override
+    @Scheduled(cron = "0 0 11 * * ?")
+    @Transactional
+    public void changeReservationAsCompleted() {
+        LocalDate currentDay = LocalDate.now();
+
+        List<ReservationEntity> finished = reservationRepository.findByStatusReservationAndCheckOutLessThanEqual(StatusReservation.Confirmed, currentDay);
+
+        for (ReservationEntity reservationEntity : finished) {
+            reservationEntity.setStatusReservation(StatusReservation.Completed);
+        }
+
+        reservationRepository.saveAll(finished);
     }
 }
