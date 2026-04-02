@@ -49,6 +49,8 @@ message ReservationStatusChangeRequest {
   string startDate = 2;
   string endDate = 3;
   string uuidOwner = 4;
+  string blockType = 5;
+  string reason = 6;
 }
 
 message ReservationStatusChangeResponse {

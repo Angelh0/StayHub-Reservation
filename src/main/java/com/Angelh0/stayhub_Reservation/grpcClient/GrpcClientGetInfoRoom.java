@@ -34,6 +34,8 @@ public class GrpcClientGetInfoRoom {
         dto.setUuidRoom(UUID.fromString(response.getUuidRoom()));
         dto.setPrice(response.getPrice());
         dto.setType(response.getType());
+        dto.setUuidAccommodation(UUID.fromString(response.getUuidAccommodation()));
+        dto.setNameAccommodation(response.getNameAccommodation());
         return dto;
     }
 }

@@ -14,6 +14,9 @@ public class BlockDTO {
     private UUID uuid;
     private UUID uuidRoom;
 
+    private String blockType;
+    private String reason;
+
     @JsonFormat(pattern="d/M/yyyy")
     private LocalDate blockStartDate;
 

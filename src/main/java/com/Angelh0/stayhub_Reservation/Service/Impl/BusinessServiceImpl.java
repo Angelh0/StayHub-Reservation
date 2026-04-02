@@ -31,63 +31,63 @@ public class BusinessServiceImpl implements BusinessService {
     }
 
     @Override
-    public StatusCheckValue isCheckStatus(String uuid, String uuidOwner, LocalDate startDate, LocalDate endDate) {
+    public StatusCheckValue isCheckStatus(String uuid, String uuidOwner, LocalDate startDate, LocalDate endDate, String blockType, String reason) {
 
         StatusCheckValue status = new StatusCheckValue();
         StringBuilder stringBuilder = new StringBuilder();
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        formatter.format(startDate);
-        formatter.format(endDate);
 
-        List<ReservationEntity> reservationEntityList = reservationRepository.findByUuidRoom(UUID.fromString(uuid));
-        List<BlockEntity> blockEntities = blockRepository.findBlockByUuidRoom(UUID.fromString(uuid));
+        UUID roomUuid = UUID.fromString(uuid);
+        List<ReservationEntity> reservationEntityList = reservationRepository.findByUuidRoom(roomUuid);
+        List<BlockEntity> blockEntities = blockRepository.findBlockByUuidRoom(roomUuid);
 
         for (ReservationEntity reservationEntity : reservationEntityList) {
             if (startDate.isBefore(reservationEntity.getCheckOut()) && endDate.isAfter(reservationEntity.getCheckIn())) {
                 stringBuilder.append("- Reserva del ")
-                        .append(reservationEntity.getCheckIn())
+                        .append(reservationEntity.getCheckIn().format(formatter))
                         .append(" al ")
-                        .append(reservationEntity.getCheckOut())
+                        .append(reservationEntity.getCheckOut().format(formatter))
                         .append("\n");
             }
         }
 
-
         for (BlockEntity blockEntity : blockEntities) {
             if (startDate.isBefore(blockEntity.getBlockEndDate()) && endDate.isAfter(blockEntity.getBlockStartDate())) {
                 stringBuilder.append("- Bloqueo del ")
-                        .append(formatter.format(blockEntity.getBlockStartDate()))
+                        .append(blockEntity.getBlockStartDate().format(formatter))
                         .append(" al ")
-                        .append(formatter.format(blockEntity.getBlockEndDate()))
+                        .append(blockEntity.getBlockEndDate().format(formatter))
                         .append("\n");
             }
         }
 
         if (stringBuilder.length() > 0) {
             status.available = false;
-            status.message = "No se puede completar el bloqueo. Existen conflictos:\n " + stringBuilder;
+            status.message = "No se puede completar el bloqueo. Existen conflictos:\n" + stringBuilder;
             return status;
         }
 
-        createBlock(UUID.fromString(uuid), UUID.fromString(uuidOwner), startDate, endDate);
+        createBlock(roomUuid, UUID.fromString(uuidOwner), startDate, endDate, blockType, reason);
 
         status.available = true;
-        status.message = "Nuevo bloqueo establecido:\n " +
-                "- RoomUuid: " + uuid +
-                "- Inicio de bloqueo: " + startDate +
-                "- Finalizacion de bloqueo: " + endDate;
+        status.message = "Nuevo bloqueo establecido:\n" +
+                "- RoomUuid: " + uuid + "\n" +
+                "- Inicio: " + startDate.format(formatter) + "\n" +
+                "- Fin: " + endDate.format(formatter);
+
         return status;
     }
 
     @Override
-    public BlockDTO createBlock(UUID uuidRoom, UUID uuidOwner, LocalDate blockStartDate, LocalDate blockEndDate) {
+    public BlockDTO createBlock(UUID uuidRoom, UUID uuidOwner, LocalDate blockStartDate, LocalDate blockEndDate, String blockType, String reason) {
 
         BlockEntity blockEntity = new BlockEntity();
         blockEntity.setUuidRoom(uuidRoom);
         blockEntity.setUuidOwner(uuidOwner);
         blockEntity.setBlockStartDate(blockStartDate);
         blockEntity.setBlockEndDate(blockEndDate);
+        blockEntity.setBlockType(blockType);
+        blockEntity.setReason(reason);
 
         blockRepository.save(blockEntity);
 

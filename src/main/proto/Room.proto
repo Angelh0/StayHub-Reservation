@@ -25,4 +25,6 @@ message RoomResponse {
   double price = 2;
   string uuidOwner = 3;
   ReservationType type = 4;
+  string uuidAccommodation = 5;
+  string nameAccommodation = 6;
 }

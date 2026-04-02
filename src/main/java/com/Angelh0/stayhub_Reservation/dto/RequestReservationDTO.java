@@ -22,6 +22,14 @@ public class RequestReservationDTO {
 
     private UUID uuidOwner;
 
+    private UUID uuidAccommodation;
+
+    private String nameAccommodation;
+
+    private String userName;
+    private String userLastName;
+    private String userEmail;
+
     @JsonFormat(pattern="d/M/yyyy")
     private LocalDate checkIn;
 

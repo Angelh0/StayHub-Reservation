@@ -21,7 +21,13 @@ public class GrpcCheckRoomStatusChangeImpl extends ReservationAvailabilityServic
     @Override
     public void checkRoomStatusChange(ReservationStatusChangeRequest request, StreamObserver<ReservationStatusChangeResponse> responseObserver) {
 
-        StatusCheckValue changeStatus = businessService.isCheckStatus(request.getRoomUuid(), request.getUuidOwner(), LocalDate.parse(request.getStartDate()), LocalDate.parse(request.getEndDate()));
+        StatusCheckValue changeStatus = businessService.isCheckStatus
+                (request.getRoomUuid(),
+                        request.getUuidOwner(),
+                        LocalDate.parse(request.getStartDate()),
+                        LocalDate.parse(request.getEndDate()),
+                        request.getBlockType(),
+                        request.getReason());
 
         ReservationStatusChangeResponse response = ReservationStatusChangeResponse.newBuilder()
                 .setAvailable(changeStatus.available)

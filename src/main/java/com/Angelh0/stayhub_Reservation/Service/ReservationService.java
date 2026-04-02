@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface ReservationService {
 
-    ReservationDTO createReservation(UUID uuidRoom, UUID uuidUser);
+    ReservationDTO createReservation(UUID uuidRoom, UUID uuidUser, String userName, String userLastName, String userEmail);
     List<ReservationDTO> getMyReservation(UUID uuidUser);
     ReservationDTO cancelReservation(UUID uuidReservation, UUID uuidUser);
     List<ReservationDTO> getOwnerReservation(UUID uuidUser);

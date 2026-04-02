@@ -20,6 +20,14 @@ public class ReservationDTO {
 
     private UUID uuidRoom;
 
+    private UUID uuidAccommodation;
+
+    private String nameAccommodation;
+
+    private String userName;
+    private String userLastName;
+    private String userEmail;
+
     private UUID uuidUser;
 
     private UUID uuidOwner;

@@ -22,6 +22,8 @@ public class BlockEntity {
     private UUID uuidRoom;
 
     private UUID uuidOwner;
+    private String blockType;
+    private String reason;
 
     private LocalDate blockStartDate;
     private LocalDate blockEndDate;

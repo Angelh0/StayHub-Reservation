@@ -10,4 +10,5 @@ public interface BlockRepository extends JpaRepository<BlockEntity, Long> {
     List<BlockEntity> findBlockByUuidRoom(UUID uuidRoom);
     List<BlockEntity> findByUuidOwner(UUID uuidOwner);
     List<BlockEntity> findByUuidAndUuidOwner(UUID uuidBlock, UUID uuidOwner);
+    List<BlockEntity> findByUuidOwnerAndUuidRoom(UUID uuidOwner, UUID uuidRoom);
 }

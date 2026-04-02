@@ -49,21 +49,17 @@ public class BlockServiceImpl implements BlockService {
 
     @Override
     public List<BlockDTO> getBlock(UUID uuidOwner) {
-
         List<BlockEntity> blockEntityList = blockRepository.findByUuidOwner(uuidOwner);
 
         if (blockEntityList.isEmpty()) {
-            return null;
+            return new ArrayList<>();
         }
 
         List<BlockDTO> blockDTOS = new ArrayList<>();
-
         for (BlockEntity blockEntity : blockEntityList) {
-            if (blockEntity.getUuidOwner().equals(uuidOwner)) {
-                blockDTOS.add(blockConverter.convertToDTO(blockEntity));
-            }
+            blockDTOS.add(blockConverter.convertToDTO(blockEntity));
         }
-
         return blockDTOS;
     }
+
 }

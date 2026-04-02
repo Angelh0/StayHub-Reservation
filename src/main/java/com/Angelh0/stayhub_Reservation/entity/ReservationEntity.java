@@ -25,11 +25,21 @@ public class ReservationEntity {
     @Column(nullable = false)
     private UUID uuidReservation;
 
+    private UUID uuidAccommodation;
+
     private UUID uuidRoom;
 
     private UUID uuidUser;
 
     private UUID uuidOwner;
+
+    private String nameAccommodation;
+
+    private String userName;
+
+    private String userLastName;
+
+    private String userEmail;
 
     private LocalDate checkIn;
 

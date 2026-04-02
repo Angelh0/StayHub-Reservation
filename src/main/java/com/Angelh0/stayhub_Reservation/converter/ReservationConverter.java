@@ -28,6 +28,11 @@ public class ReservationConverter {
 
         reservationDTO.setUuidRoom(grpcResponse.getUuidRoom());
         reservationDTO.setUuidUser(reservationEntity.getUuidUser());
+        reservationDTO.setUuidAccommodation(reservationEntity.getUuidAccommodation());
+        reservationDTO.setNameAccommodation(reservationEntity.getNameAccommodation());
+        reservationDTO.setUserName(reservationEntity.getUserName());
+        reservationDTO.setUserLastName(reservationEntity.getUserLastName());
+        reservationDTO.setUserEmail(reservationEntity.getUserEmail());
         reservationDTO.setPrice(grpcResponse.getPrice());
         reservationDTO.setUuidReservation(reservationEntity.getUuidReservation());
         reservationDTO.setCheckIn(reservationEntity.getCheckIn());
@@ -46,6 +51,11 @@ public class ReservationConverter {
         reservationEntity.setUuidReservation(requestReservationDTO.getUuidReservation());
         reservationEntity.setUuidUser(requestReservationDTO.getUuidUser());
         reservationEntity.setUuidRoom(requestReservationDTO.getUuidRoom());
+        reservationEntity.setUuidAccommodation(requestReservationDTO.getUuidAccommodation());
+        reservationEntity.setNameAccommodation(requestReservationDTO.getNameAccommodation());
+        reservationEntity.setUserName(requestReservationDTO.getUserName());
+        reservationEntity.setUserLastName(requestReservationDTO.getUserLastName());
+        reservationEntity.setUserEmail(requestReservationDTO.getUserEmail());
         reservationEntity.setPrice(requestReservationDTO.getPrice());
         reservationEntity.setCheckIn(requestReservationDTO.getCheckIn());
         reservationEntity.setCheckOut(requestReservationDTO.getCheckOut());

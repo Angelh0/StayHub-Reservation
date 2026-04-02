@@ -12,6 +12,8 @@ public class BlockConverter {
 
         blockDTO.setUuid(blockEntity.getUuid());
         blockDTO.setUuidRoom(blockEntity.getUuidRoom());
+        blockDTO.setBlockType(blockEntity.getBlockType());
+        blockDTO.setReason(blockEntity.getReason());
         blockDTO.setBlockStartDate(blockEntity.getBlockStartDate());
         blockDTO.setBlockEndDate(blockEntity.getBlockEndDate());
 
@@ -23,8 +25,10 @@ public class BlockConverter {
 
         blockEntity.setUuid(blockDTO.getUuid());
         blockEntity.setUuidRoom(blockDTO.getUuidRoom());
-        blockEntity.setBlockStartDate(blockEntity.getBlockStartDate());
-        blockEntity.setBlockEndDate(blockEntity.getBlockEndDate());
+        blockEntity.setBlockType(blockDTO.getBlockType());
+        blockEntity.setReason(blockDTO.getReason());
+        blockEntity.setBlockStartDate(blockDTO.getBlockStartDate());
+        blockEntity.setBlockEndDate(blockDTO.getBlockEndDate());
 
         return blockEntity;
     }

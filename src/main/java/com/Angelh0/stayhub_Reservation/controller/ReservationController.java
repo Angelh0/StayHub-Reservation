@@ -5,6 +5,8 @@ import com.Angelh0.stayhub_Reservation.Service.ReservationService;
 import com.Angelh0.stayhub_Reservation.dto.BlockDTO;
 import com.Angelh0.stayhub_Reservation.dto.ReservationDTO;
 import org.springframework.cglib.core.Block;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,9 +26,13 @@ public class ReservationController {
     }
 
     @PostMapping("/createReservation/{uuidRoom}")
-    public ReservationDTO createReservation(@PathVariable UUID uuidRoom, Authentication authentication) {
+    public ReservationDTO createReservation(@PathVariable UUID uuidRoom, Authentication authentication, @RequestHeader("Authorization") String token) throws Exception {
+
         UUID uuidUser = UUID.fromString(authentication.getPrincipal().toString());
-        return reservationService.createReservation(uuidRoom, uuidUser);
+        String payload = new String(java.util.Base64.getUrlDecoder().decode(token.split("\\.")[1]));
+        com.fasterxml.jackson.databind.JsonNode json = new com.fasterxml.jackson.databind.ObjectMapper().readTree(payload);
+        return reservationService.createReservation(uuidRoom,uuidUser,json.get("firstName").asText(),json.get("lastName").asText(),json.get("sub").asText()
+        );
     }
 
     @GetMapping("/myReservation/user")
@@ -48,9 +54,10 @@ public class ReservationController {
     }
 
     @GetMapping("/getBlock")
-    public List<BlockDTO> getBlock(Authentication authentication) {
+    public ResponseEntity<List<BlockDTO>> getBlock(Authentication authentication) {
         UUID uuidOwner = UUID.fromString(authentication.getPrincipal().toString());
-        return blockService.getBlock(uuidOwner);
+        List<BlockDTO> blocks = blockService.getBlock(uuidOwner);
+        return new ResponseEntity<>(blocks, HttpStatus.OK);
     }
 
     @PatchMapping("/cancelBlock/{uuidBlock}")

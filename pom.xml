@@ -122,13 +122,6 @@
             <version>3.0.0.RELEASE</version>
         </dependency>
 
-        <!-- gRPC Spring Boot Starter -->
-        <dependency>
-            <groupId>net.devh</groupId>
-            <artifactId>grpc-spring-boot-starter</artifactId>
-            <version>3.0.0.RELEASE</version>
-        </dependency>
-
         <!-- JavaX Annotations -->
         <dependency>
             <groupId>javax.annotation</groupId>
@@ -158,13 +151,6 @@
             <version>0.11.5</version>
             <scope>runtime</scope>
         </dependency>
-
-        <!-- Spring Security -->
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-        </dependency>
-
     </dependencies>
 
     <build>

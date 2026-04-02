@@ -56,33 +56,37 @@ public class ReservationServiceImpl implements ReservationService {
     }
 
     @Override
-    public ReservationDTO createReservation(UUID uuidRoom, UUID uuidUser) {
-
+    public ReservationDTO createReservation(UUID uuidRoom, UUID uuidUser, String userName, String lastName, String userEmail) {
         List<ReservationEntity> reservationEntityList = reservationRepository.findByUuidRoom(uuidRoom);
 
         ReservationDTO grpcResponse = grpcClientGetInfoRoom.getInfoRoom(uuidRoom);
         ReservationDTO checkResponse = grpcClientGetChecks.getCheckRoom();
 
         RequestReservationDTO requestReservationDTO = new RequestReservationDTO();
+        requestReservationDTO.setUuidAccommodation(grpcResponse.getUuidAccommodation());
+        requestReservationDTO.setNameAccommodation(grpcResponse.getNameAccommodation());
+        requestReservationDTO.setUserName(userName);
+        requestReservationDTO.setUserLastName(lastName);
+        requestReservationDTO.setUserEmail(userEmail);
         requestReservationDTO.setStatusReservation(StatusReservation.Pending);
         requestReservationDTO.setUuidUser(uuidUser);
         requestReservationDTO.setUuidOwner(grpcResponse.getUuidOwner());
         requestReservationDTO.setCheckIn(checkResponse.getCheckIn());
         requestReservationDTO.setCheckOut(checkResponse.getCheckOut());
-
         requestReservationDTO.setUuidRoom(grpcResponse.getUuidRoom());
         requestReservationDTO.setPrice(grpcResponse.getPrice());
         requestReservationDTO.setType(grpcResponse.getType());
 
-
-
-        for (ReservationEntity reservationEntity : reservationEntityList) {
-            if (reservationEntity.getCheckIn().isBefore(requestReservationDTO.getCheckOut()) &&
-                    reservationEntity.getCheckOut().isAfter(requestReservationDTO.getCheckIn()) &&
-                    requestReservationDTO.getCheckIn().equals(requestReservationDTO.getCheckOut())) {
-                return null;
+        for (ReservationEntity res : reservationEntityList) {
+            if (res.getStatusReservation() != StatusReservation.cancelled) {
+                boolean overlap = requestReservationDTO.getCheckIn().isBefore(res.getCheckOut()) &&
+                        res.getCheckIn().isBefore(requestReservationDTO.getCheckOut());
+                if (overlap) {
+                    return null;
+                }
             }
         }
+
         ReservationEntity reservationEntity = reservationConverter.requestToEntity(requestReservationDTO);
         reservationEntity = reservationRepository.save(reservationEntity);
         return reservationConverter.convertToDTO(reservationEntity);
@@ -164,24 +168,26 @@ public class ReservationServiceImpl implements ReservationService {
 
     @Override
     public boolean isRoomAvailable(String uuid, LocalDate checkIn, LocalDate checkOut) {
-
         List<BlockEntity> blockEntities = blockRepository.findBlockByUuidRoom(UUID.fromString(uuid));
         List<ReservationEntity> reservationEntityList = reservationRepository.findByUuidRoom(UUID.fromString(uuid));
 
-        for (BlockEntity blockEntity : blockEntities) {
-            if (checkIn.isBefore(blockEntity.getBlockEndDate()) && checkOut.isAfter(blockEntity.getBlockStartDate())) {
+        for (BlockEntity block : blockEntities) {
+            if (checkIn.isBefore(block.getBlockEndDate()) && checkOut.isAfter(block.getBlockStartDate())) {
                 return false;
             }
         }
 
-        for (ReservationEntity reservationEntity : reservationEntityList) {
-            boolean isOverLopping = checkIn.isBefore(reservationEntity.getCheckOut()) && checkOut.isAfter(reservationEntity.getCheckIn());
-            boolean isActiveReservation = reservationEntity.getStatusReservation().equals(StatusReservation.Pending) || reservationEntity.getStatusReservation().equals(StatusReservation.Confirmed);
+        for (ReservationEntity reservation : reservationEntityList) {
+            if (reservation.getStatusReservation() != StatusReservation.cancelled) {
 
-            if (isOverLopping && isActiveReservation) {
-                return false;
+                boolean conflict = checkIn.isBefore(reservation.getCheckOut()) && checkOut.isAfter(reservation.getCheckIn());
+
+                if (conflict) {
+                    return false;
+                }
             }
         }
+
         return true;
     }
 
