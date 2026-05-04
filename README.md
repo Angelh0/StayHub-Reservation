@@ -2,181 +2,55 @@
 
 ## 📍 Estado del proyecto
 
-🚧 Proyecto en desarrollo
+✅ **Finalizado**
 
-La arquitectura y los componentes evolucionan de forma progresiva conforme se incorporan nuevas funcionalidades y tecnologías.
-Para consultar el código del proyecto se debe acceder al branch "testing"
+Este repositorio contiene el microservicio de **Reservas**. Es el motor central que posee la "verdad absoluta" sobre la disponibilidad dentro del ecosistema StayHub. Gestiona el ciclo de vida completo de las reservas y las restricciones de ocupación, garantizando que no existan colisiones de fechas.
 
-## 📌 Descripción
+---
 
-StayHub - Reservation es el microservicio encargado de gestionar todo el ciclo de vida de las reservas y bloqueos de habitaciones dentro del proyecto StayHub
+## 🎯 Hitos del microservicio
 
-Este servicio forma parte de la arquitectura basada en microservicios orientada al aprendizaje y el diseño de sistemas backend actuales, simulando el funcionamiento real de una plataforma de gestión de alojamientos y reservas.
+### ⚙️ Motor de disponibilidad estricto
+Se ha desarrollado un validador de ocupación que actúa como fuente de la verdad para todo el sistema:
+* **Prevención de colisiones:** Comprueba en tiempo real solapamientos, bloqueos activos y reservas futuras (`CheckFutureReservation`).
+* **Respuesta enriquecida:** El método `createReservation` no solo guarda la reserva, sino que calcula automáticamente el **Precio Total** y devuelve los datos completos del cliente y la propiedad, facilitando el trabajo del Frontend.
 
-El objetivo principal de este microservicio es centralizar la lógica relacionada con: 
+### 🔄 Ciclo de vida automatizado y trazabilidad
+Implementación de lógica de negocio para la consistencia del histórico:
+* **Inmutabilidad de reservas:** Las reservas nunca se eliminan, solo cambian de estado (Pendiente, Confirmada, Cancelada, Completada) para mantener una trazabilidad histórica perfecta.
+* **Cron Jobs (Automatización):** Se han implementado tareas programadas en segundo plano. Las reservas se confirman automáticamente a los 5 minutos de su creación, y a las 11:00 AM del día de *check-out*, su estado pasa automáticamente a "Completada".
 
-- Creación de reservas
-- Cancelación de reservas
-- Gestión de estados de reserva
-- Consulta de reservas por usuario
-- Consulta de reservas por propietario
-- Gestión de bloqueos de habitaciones
-- Validaciones de disponibilidad reales
+### 🚧 Sistema de bloqueos
+Para otorgar control total a los propietarios sin corromper los datos:
+* **Restricciones temporales:** Permite cerrar habitaciones por rangos de fechas con motivos específicos (mantenimiento, personal, temporada, otros).
+* **Protección de datos:** El sistema impide crear un bloqueo si este pisa o solapa una reserva previamente confirmada. A diferencia de las reservas, los bloqueos sí admiten borrado físico al ser una restricción temporal.
 
-## 🎯 Responsabilidad del microservicio
+### 🔐 Seguridad y aislamiento de datos
+Se ha implementado `Spring Security` y filtrado JWT para un control de acceso basado en la propiedad de los datos:
+* **Contexto de Usuario (`User`):** Tienen acceso restringido a `GetMyReservation` y `CancelReservation` (solo pueden ver y cancelar sus propias reservas). Queda registrado el UUID del cliente de forma automática.
+* **Contexto de Propietario (`Owner`):** Mediante `GetOwnerReservation`, pueden obtener todas las reservas realizadas en sus alojamientos y gestionar los bloqueos de sus habitaciones.
 
-- Este microservicio cumple con las siguientes responsabilidades:
-- Crear reservas de habitaciones
-- Calcular el precio total de la reserva
-- Asignar propietario y usuario implicados
-- Gestionar el estado de las reservas
-- Permitir la cancelación de reservas
-- Mantener el historial completo de reservas
-- Crear y eliminar bloqueos de habitaciones
-- Validar solapamientos entre reservas y bloqueos
-- Proveer la verdad final sobre disponibilidad
+### 🔗 Orquestación distribuida (gRPC)
+Este microservicio interactúa constantemente de forma bidireccional mediante gRPC:
+* **Con StayHub-Accommodation:** Recibe peticiones para verificar la disponibilidad real antes de mostrar resultados de búsqueda. Además, recibe el identificador y el nombre del alojamiento para guardarlos en el registro de la reserva.
+* **Protección estructural:** Evita que el microservicio de alojamientos pueda eliminar habitaciones o alojamientos si estos contienen reservas futuras activas.
 
-Este microservicio es el encargado de aportar la información real sobre ocupación
-
-Este microservicio no es responsable de: 
-- Crear alojamientos
-- Crear habitaciones
-- Realizar búsquedas de alojamientos
-- Publicar alojamientos
-- Getionar países o ciudades
-
-## 🧩 Modelo de dominio
-
-**Reserva**
-
-Una reserva es representada por la intención de un usuario de ocupar una habitación durante un rango de fechas determinado
-
-Cada reserva contiene: 
-- Identificador único de la reserva
-- Identificador único de la habitación
-- Identificador único del usuario
-- Identificador único del propietario
-- Fecha de entrada
-- Fecha de salida
-- Fecha de creación
-- Estado de la reserva
-- Precio total
-- Tipo de habitación
-
-Las reservas no se eliminan nunca, solo cambian de estado
-
-Los estados de las reservas son los siguientes:
-- Pendiente
-- Confirmada
-- Cancelado
-- Completada
-
-Este diseño permite mantener histórico de reservas
-
-**Bloqueos**
-
-Los bloqueos son representados como restricciones realizadas por el propietario sobre una habitación
-
-Características principales:
-- Solo el propietario puede crear bloqueos
-- Los bloqueos tienen un rango de fechas
-- Un bloqueo impide nuevas reservas o bloqueos
-- No puede solaparse con reservas o bloqueos ya existentes
-
-A diferencia de las reservas, un bloqueo si podrá ser eliminado de manera definitiva, ya que se comprenden como una restricción temporal
-
-Este sistema permite: 
-- Cerrar habitaciones temporalmente
-- Retirar alojamientos de las búsquedas
-- Evitar la eliminación de datos históricos
-
-## 🔄 Flujo general de reservas
-
-**1️⃣ Búsqueda de disponibilidad**
-
-El proceso de busqueda se realiza desde el microservicio StayHub-Accommodation, el cual solicita al microservicio StayHub-Reservation la verificación de disponibilidad
-
-Reservation valida:
-- Reservas existentes
-- Bloqueos activos
-- Solapamientos de fechas
-
-Solo las habitaciones disponibles continúan el proceso
-
-**2️⃣ Creación de reserva**
-
-Para crear una reserva es obligatorio:
-- Estar autenticado como usuario
-- Proporcionar la habitación que quiere ser reservada
-
-El sistema obtendrá los datos automáticamente debido a que previamente han sido guardados y actualizados en todo momento por StayHub-Accommodation, estos datos son enviados mediante comunicación gRPC
-
-**3️⃣ Consulta de reservas del usuario**
-
-Un usuario puede consultar todas sus reservas:
-- Activas
-- Completadas
-- Canceladas
-- Pendientes de confirmación
-
-**4️⃣ Cancelación de reserva**
-
-Una reserva puede ser cancelada por el usuario
-
-La cancelación no elimina la reserva, únicamente cambia su estado a cancelado
-
-**5️⃣ Reservas del propietario**
-
-El propietario puede consultar todas las reservas realizadas sobre sus habitaciones, independientemente del estado de las mismas
-
-## 🧱 Sistema de bloqueos
-
-El propietario puede: 
-- Crear bloqueos por rango de fechas
-- Consultar bloqueos existentes
-- Eliminar bloqueos
-
-Los bloqueos: 
-- Impiden nuevas reservas
-- No afectan a reservas ya creadas
-- Pueden ser eliminadas
-
-Este sistema pemite:
-- Cierre temporal de habitaciones (o alojamiento en el caso de que todas las habitaciones esten bloqueadas)
-- Deshabilitación de un alojamiento sin eliminar la información
-
-## 🔗 Comunicación entre microservicios
-
-Este microservicio se comunica mediante gRPC con: 
-
-StayHub - Accommodation
-
-Utilizado para consultas realizadas por parte de StayHub - Accommodation: 
-
- - Verificar disponibilidad
- - Validar solapamientos
- - Impedir eliminación de habitaciones con reservas futuras
-
-## 🔐 Seguridad y control de acceso
-
-- Los usuarios solo pueden gestionar sus propias reservas
-- Los propietarios solo pueden gestionar reservas de sus habitaciones
-- Los bloqueos solo pueden ser creados por propietarios
-- Todos los endpoint están protegidos mediante JWT
-- El token determina el contexto de usuario o propietario
+---
 
 ## 🛠️ Tecnologías utilizadas
-- Java
-- Spring Boot
-- Spring Security
-- JWT
-- JPA / Hibernate
-- gRPC
-- REST API
-- JSON
-- H2 (para desarrollo)
-- Git
+* **Lenguaje y Framework:** Java 17, Spring Boot
+* **Seguridad y Acceso:** Spring Security, JWT (JSON Web Tokens)
+* **Persistencia y ORM:** JPA, Hibernate, PostgreSQL (Producción), H2 (Desarrollo y Testing)
+* **Arquitectura y Comunicación:** Patrón Microservicios, gRPC, API REST, JSON
+* **Manejo de Errores:** Interceptores y Excepciones personalizadas para evitar fallos de concurrencia.
+* **DevOps y Despliegue:** Docker, Docker Compose (gestión de puertos para gRPC), Git, GitHub.
 
-## 📘 Contexto del proyecto
+---
 
-Este microservicio forma parte del proyecto StayHub, una proyecto backend diseñado con fines de aprendizaje y de arquitectura, orientada a simular escenarios reales utilizados en sistemas de gestión de alojamientos.
+## 🚀 Próximos pasos en StayHub
+
+StayHub se basa en una arquitectura diseñada en la separación de responsabilidades, lo que facilita futuras integraciones como:
+
+* Implementación de pasarela de pagos integrada en la reserva.
+* Sistema de notificaciones automáticas (Email/SMS) al cambiar el estado de la reserva.
+* Panel de estadísticas y nivel de ocupación para propietarios.
