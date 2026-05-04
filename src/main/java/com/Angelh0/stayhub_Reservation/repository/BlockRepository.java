@@ -1,0 +1,14 @@
+package com.Angelh0.stayhub_Reservation.repository;
+
+import com.Angelh0.stayhub_Reservation.entity.BlockEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.UUID;
+
+public interface BlockRepository extends JpaRepository<BlockEntity, Long> {
+    List<BlockEntity> findBlockByUuidRoom(UUID uuidRoom);
+    List<BlockEntity> findByUuidOwner(UUID uuidOwner);
+    List<BlockEntity> findByUuidAndUuidOwner(UUID uuidBlock, UUID uuidOwner);
+    List<BlockEntity> findByUuidOwnerAndUuidRoom(UUID uuidOwner, UUID uuidRoom);
+}

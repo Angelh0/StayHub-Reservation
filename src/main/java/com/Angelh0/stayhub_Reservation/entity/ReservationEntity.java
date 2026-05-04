@@ -1,11 +1,14 @@
 package com.Angelh0.stayhub_Reservation.entity;
 
 import com.Angelh0.stayhub_Reservation.Enum.StatusReservation;
+import com.roomServiceGrpc.grpc.ReservationType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 @Entity
@@ -22,7 +25,21 @@ public class ReservationEntity {
     @Column(nullable = false)
     private UUID uuidReservation;
 
+    private UUID uuidAccommodation;
+
     private UUID uuidRoom;
+
+    private UUID uuidUser;
+
+    private UUID uuidOwner;
+
+    private String nameAccommodation;
+
+    private String userName;
+
+    private String userLastName;
+
+    private String userEmail;
 
     private LocalDate checkIn;
 
@@ -32,9 +49,11 @@ public class ReservationEntity {
     @Column(name = "status")
     private StatusReservation statusReservation;
 
-    private LocalDate createdReservation;
+    private LocalDateTime createdReservation;
 
     private Double price;
+
+    private ReservationType type;
 
     @PrePersist
     public void generateUUID() {
@@ -42,7 +61,7 @@ public class ReservationEntity {
             uuidReservation = UUID.randomUUID();
         }
         if (createdReservation == null) {
-            createdReservation = LocalDate.now();
+            createdReservation = LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
         }
         if (statusReservation == null) {
             statusReservation = StatusReservation.Pending;

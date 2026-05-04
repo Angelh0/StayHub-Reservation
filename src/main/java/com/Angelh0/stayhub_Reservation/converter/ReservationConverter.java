@@ -27,12 +27,20 @@ public class ReservationConverter {
         );
 
         reservationDTO.setUuidRoom(grpcResponse.getUuidRoom());
+        reservationDTO.setUuidUser(reservationEntity.getUuidUser());
+        reservationDTO.setUuidAccommodation(reservationEntity.getUuidAccommodation());
+        reservationDTO.setNameAccommodation(reservationEntity.getNameAccommodation());
+        reservationDTO.setUserName(reservationEntity.getUserName());
+        reservationDTO.setUserLastName(reservationEntity.getUserLastName());
+        reservationDTO.setUserEmail(reservationEntity.getUserEmail());
         reservationDTO.setPrice(grpcResponse.getPrice());
         reservationDTO.setUuidReservation(reservationEntity.getUuidReservation());
         reservationDTO.setCheckIn(reservationEntity.getCheckIn());
         reservationDTO.setCheckOut(reservationEntity.getCheckOut());
         reservationDTO.setStatusReservation(reservationEntity.getStatusReservation());
         reservationDTO.setCreatedReservation(reservationEntity.getCreatedReservation());
+        reservationDTO.setUuidOwner(grpcResponse.getUuidOwner());
+        reservationDTO.setType(grpcResponse.getType());
 
         return reservationDTO;
     }
@@ -41,11 +49,19 @@ public class ReservationConverter {
         ReservationEntity reservationEntity = new ReservationEntity();
 
         reservationEntity.setUuidReservation(requestReservationDTO.getUuidReservation());
+        reservationEntity.setUuidUser(requestReservationDTO.getUuidUser());
         reservationEntity.setUuidRoom(requestReservationDTO.getUuidRoom());
+        reservationEntity.setUuidAccommodation(requestReservationDTO.getUuidAccommodation());
+        reservationEntity.setNameAccommodation(requestReservationDTO.getNameAccommodation());
+        reservationEntity.setUserName(requestReservationDTO.getUserName());
+        reservationEntity.setUserLastName(requestReservationDTO.getUserLastName());
+        reservationEntity.setUserEmail(requestReservationDTO.getUserEmail());
         reservationEntity.setPrice(requestReservationDTO.getPrice());
         reservationEntity.setCheckIn(requestReservationDTO.getCheckIn());
         reservationEntity.setCheckOut(requestReservationDTO.getCheckOut());
         reservationEntity.setStatusReservation(requestReservationDTO.getStatusReservation());
+        reservationEntity.setUuidOwner(requestReservationDTO.getUuidOwner());
+        reservationEntity.setType(requestReservationDTO.getType());
 
         return reservationEntity;
     }

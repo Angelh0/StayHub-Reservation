@@ -2,11 +2,13 @@ package com.Angelh0.stayhub_Reservation.dto;
 
 import com.Angelh0.stayhub_Reservation.Enum.StatusReservation;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.roomServiceGrpc.grpc.ReservationType;
 import lombok.Getter;
 import lombok.Setter;
 
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Getter
@@ -18,6 +20,18 @@ public class ReservationDTO {
 
     private UUID uuidRoom;
 
+    private UUID uuidAccommodation;
+
+    private String nameAccommodation;
+
+    private String userName;
+    private String userLastName;
+    private String userEmail;
+
+    private UUID uuidUser;
+
+    private UUID uuidOwner;
+
     @JsonFormat(pattern="d/M/yyyy")
     private LocalDate checkIn;
 
@@ -27,10 +41,10 @@ public class ReservationDTO {
     private StatusReservation statusReservation;
 
     @JsonFormat(pattern="d/M/yyyy")
-    private LocalDate createdReservation;
+    private LocalDateTime createdReservation;
 
     private Double price;
 
-    //Añadir numero de personas, tipo de habitacion
+    private ReservationType type;
 
 }

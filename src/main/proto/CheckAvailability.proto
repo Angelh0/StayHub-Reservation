@@ -1,0 +1,60 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.checkAvailability.grpc";
+option java_outer_classname = "AvailabilityProto";
+
+service availabilityService {
+  rpc CheckAvailability(AvailabilityRequest) returns (AvailabilityResponse);
+}
+
+message AvailabilityRequest {
+  repeated string roomUuid = 1;
+  string checkIn = 2;
+  string checkOut = 3;
+}
+
+message RoomAvailability {
+  string roomUuid = 1;
+  bool available = 2;
+}
+
+message AvailabilityResponse {
+  repeated RoomAvailability rooms = 1;
+}
+
+// Este contrato se utiliza para el metodo deleteRoom (como comprobacion de existencia de reservas antes de borrado)
+
+service ReservationCheckService {
+  rpc CheckFutureReservation(ReservationRequest) returns (ReservationResponse);
+}
+
+message ReservationRequest {
+  string roomUuid = 1;
+}
+
+message ReservationResponse {
+  string roomUuid = 1;
+  bool available = 2;
+}
+
+// Este contrato es utilizado para modificar los estados de las habitaciones, siempre y cuando no exista una reserva en las fechas seleccionadas
+
+service ReservationAvailabilityService {
+  rpc CheckRoomStatusChange (ReservationStatusChangeRequest) returns (ReservationStatusChangeResponse);
+}
+
+message ReservationStatusChangeRequest {
+  string roomUuid = 1;
+  string startDate = 2;
+  string endDate = 3;
+  string uuidOwner = 4;
+  string blockType = 5;
+  string reason = 6;
+}
+
+message ReservationStatusChangeResponse {
+  bool available = 1;
+  string roomUuid = 2;
+  string message = 3;
+}

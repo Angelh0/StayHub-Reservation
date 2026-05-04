@@ -5,14 +5,26 @@ option java_package = "com.roomServiceGrpc.grpc";
 option java_outer_classname = "RoomServiceProto";
 
 service RoomService {
-  rpc getInfoRoom(ReservationRequest) returns (RoomResponse);
+  rpc getInfoRoom(RoomRequest) returns (RoomResponse);
 }
 
-message ReservationRequest {
+message RoomRequest {
   string uuidRoom = 1;
+}
+
+enum ReservationType {
+  Unspecified = 0;
+  Single = 1;
+  Double = 2;
+  Suite = 3;
+  Studio = 4;
 }
 
 message RoomResponse {
   string uuidRoom = 1;
   double price = 2;
+  string uuidOwner = 3;
+  ReservationType type = 4;
+  string uuidAccommodation = 5;
+  string nameAccommodation = 6;
 }
